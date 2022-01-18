@@ -3,7 +3,7 @@ ruleset org.twilio.sdk {
     configure using
       accountSid = ""
       authToken = ""
-    shares sendMessage
+    provides sendMessage, getMessages
   }
   global {
     base_url = "https://api.twilio.com/2010-04-01"
@@ -15,8 +15,9 @@ ruleset org.twilio.sdk {
   
     sendMessage = defaction(message) {
       post_url = <<#{base_url}/Accounts/#{accountSid}/Messages.json>>.klog("Url to post to: ")
+      // From and to sections are hardcoded because they are the only legitimate numbers for the Twilio account
       form = {
-        "To": "+4806690991",
+        "To": "+14806690991",
         "From": "+19378822560",
         "Body": message
       }
