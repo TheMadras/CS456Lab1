@@ -8,8 +8,11 @@ ruleset org.twilio.sdk {
   global {
     base_url = "https://api.twilio.com/2010-04-01"
 
-    getMessages = function() {
-      response = http:get("https://postman-echo.com/get")
+    getMessages = function(sender, receiver, page, pageToken) {
+      get_url = <<#{base_url}/Accounts/#{accountSid}/Messages.json>>.klog("Url to get from: ")  
+      qs = {"From":sender, "To":receiver, "PageSize": "10"}.put((page && pageToken) => {"PageToken": pageToken, "Page": page} | {})
+      authentication = {"username":accountSid,"password":authToken}
+      response = http:get(get_url, qs=qs, auth=authentication)
       response{"content"}.decode()
     }
   

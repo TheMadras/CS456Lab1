@@ -8,14 +8,17 @@ ruleset my_twilio_app {
   }
 
   global {
-    getMessages = function() {
-      sdk:getMessages()
+    getMessages = function(sender, receiver, page, pageToken) {
+      sdk:getMessages(sender, receiver, page, pageToken)
     }
   }
 
   rule sms {
     select when twilio sms
-    sdk:sendMessage("hey there") setting(response)
+    pre {
+      message = (event:attrs{"message"} || "Empty Message").klog("Sent Message: ")
+    }
+    sdk:sendMessage(message) setting(response)
     fired {
       ent:lastResponse := response
       ent:lastTimestamp := time:now()
