@@ -8,7 +8,7 @@ ruleset wovyn_base {
   }
 
   rule threshold_notification {
-    select when woyvn threshold_violation where event:attr("temperature") > temperature_threshold
+    select when woyvn threshold_violation where event:attrs{"temperature"} > temperature_threshold
     pre {
       message = (event:attrs{"temperature"}).klog("Violation: ")
     }
