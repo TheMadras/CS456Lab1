@@ -24,7 +24,7 @@ ruleset wovyn_base {
     noop();
     fired {
       raise wovyn event "threshold_violation" attributes {
-        "temperature" : event:attrs{["genericThing", "data", "temperature"]}[0],
+        "temperature" : temp,
         "timestamp" : event:attrs{"timestamp"}
       }
     }
