@@ -13,7 +13,7 @@ ruleset wovyn_base {
   rule threshold_notification {
     select when wovyn threshold_violation
     pre {
-      message = (<<Recieved high temp of #{event:attrs{"high_temp"}} at time {event:attrs{"time_recorded"}}.>>).klog("Sent notification: ")
+      message = (<<Recieved high temp of #{event:attrs{"high_temp"}} at time #{event:attrs{"time_recorded"}}.>>).klog("Sent notification: ")
     }
     sdk:sendMessage(message) setting(response)
     fired {
