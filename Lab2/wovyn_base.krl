@@ -4,11 +4,11 @@ ruleset wovyn_base {
   }
 
   global {
-    temperature_threshold = 71;
+    temperature_threshold = 74;
   }
 
   rule threshold_notification {
-    select when woyvn threshold_violation
+    select when woyvn threshold_violation where event:attr("temperature") > temperature_threshold
     pre {
       message = (event:attrs{"temperature"}).klog("Violation: ")
     }
@@ -19,14 +19,14 @@ ruleset wovyn_base {
   rule find_high_temps {
     select when wovyn new_temperature_reading
     pre {
-      message = (event:attrs{["temperature", "temperatureF"]}).klog("Sent Temperature: ")
+      temp = (event:attrs{["temperature", "temperatureF"]}).klog("Sent Temperature: ")
     }
     noop();
     fired {
       raise wovyn event "threshold_violation" attributes {
         "temperature" : event:attrs{["genericThing", "data", "temperature"]}[0],
         "timestamp" : event:attrs{"timestamp"}
-      } if (event:attrs{["temperature", "temperatureF"]} > temperature_threshold);
+      }
     }
   }
 
