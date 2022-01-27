@@ -1,6 +1,9 @@
 ruleset wovyn_base {
   meta {
-    
+    use module org.twilio.sdk alias sdk
+      with
+        accountSid = ctx:rid_config{"account_sid"}
+        authToken = ctx:rid_config{"auth_token"}
   }
 
   global {
@@ -10,10 +13,13 @@ ruleset wovyn_base {
   rule threshold_notification {
     select when wovyn threshold_violation
     pre {
-      message = (event:attrs{"high_temp"}).klog("Violation: ")
+      message = (<<Recieved high temp of #{event:attrs{"high_temp"}} at time {event:attrs{"time_recorded"}}.>>).klog("Sent notification: ")
     }
-
-    send_directive("threshold_notification", {"body": message})
+    sdk:sendMessage(message) setting(response)
+    fired {
+      ent:lastResponse := response
+      ent:lastTimestamp := time:now()
+    }
   }
 
   rule find_high_temps {
