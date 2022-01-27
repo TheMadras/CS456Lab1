@@ -8,9 +8,9 @@ ruleset wovyn_base {
   }
 
   rule threshold_notification {
-    select when woyvn threshold_violation where event:attrs{"temperature"} > temperature_threshold
+    select when wovyn threshold_violation
     pre {
-      message = (event:attrs{"temperature"}).klog("Violation: ")
+      message = (event:attrs{"high_temp"}).klog("Violation: ")
     }
 
     send_directive("threshold_notification", {"body": message})
@@ -24,9 +24,9 @@ ruleset wovyn_base {
     noop();
     fired {
       raise wovyn event "threshold_violation" attributes {
-        "temperature" : temp,
-        "timestamp" : event:attrs{"timestamp"}
-      }
+        "high_temp" : temp,
+        "time_recorded" : event:attrs{"timestamp"}
+      } if (temp > temperature_threshold);
     }
   }
 
