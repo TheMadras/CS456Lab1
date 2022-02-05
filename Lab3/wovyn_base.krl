@@ -7,7 +7,7 @@ ruleset wovyn_base {
   }
 
   global {
-    temperature_threshold = 10001;
+    temperature_threshold = 74;
   }
 
   rule threshold_notification {
