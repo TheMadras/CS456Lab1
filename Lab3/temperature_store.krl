@@ -7,8 +7,12 @@ ruleset wovyn_base {
   }
 
   global {
-    temperatures = [];
+    temperature_record = [];
     violating_temperatures = [];
+
+    temperatures = function() {
+      ent:temperature_record;
+    }
   }
 
   rule clear_temperatures {
@@ -16,7 +20,7 @@ ruleset wovyn_base {
     noop();
     fired {
       ent:violating_temperatures := [];
-      ent:temperatures := [];
+      ent:temperature_record := [];
     }
   }
 
@@ -38,7 +42,7 @@ ruleset wovyn_base {
     }
     noop();
     fired {
-      ent:temperatures := ent:temperatures.append({"temperature": temp, "timestamp": event:attrs{"timestamp"}});
+      ent:temperature_record := ent:temperature_record.append({"temperature": temp, "timestamp": event:attrs{"timestamp"}});
     }
   }
 }
