@@ -13,6 +13,14 @@ ruleset wovyn_base {
     temperatures = function() {
       ent:temperature_record;
     }
+
+    threshold_violations = function() {
+      ent:violating_temperatures;
+    }
+
+    inrange_temperatures = function() {
+      ent:temperature_record.filter(function(x) {x == 1;}); 
+    }
   }
 
   rule clear_temperatures {
