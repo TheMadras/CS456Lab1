@@ -33,11 +33,11 @@ ruleset temperature_store {
   rule collect_threshold_violations {
     select when wovyn threshold_violation
     pre {
-      temp = (event:attrs{["temperature", "temperatureF"]}).klog("Recording Violating Temperature: ")
+      temp = (event:attrs{"high_temp"}).klog("Recording Violating Temperature: ")
     }
     noop();
     fired {
-      ent:violating_temperatures := ent:violating_temperatures.append({"temperature": temp, "timestamp": event:attrs{"timestamp"}});
+      ent:violating_temperatures := ent:violating_temperatures.append({"temperature": temp, "timestamp": event:attrs{"time_recorded"}});
     }
   }
 
