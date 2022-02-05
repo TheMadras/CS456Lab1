@@ -18,7 +18,7 @@ ruleset wovyn_base {
     }
     noop();
     fired {
-      temperatures.append(temp);
+      ent:temperatures := ent:temperatures.append(temp);
     }
   }
 }
