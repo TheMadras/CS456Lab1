@@ -1,4 +1,4 @@
-ruleset wovyn_base {
+ruleset temperature_store {
   meta {
     provides temperatures, threshold_violations, inrange_temperatures
   }
