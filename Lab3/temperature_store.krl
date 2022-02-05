@@ -18,7 +18,7 @@ ruleset wovyn_base {
     }
     noop();
     fired {
-      ent:temperatures := ent:temperatures.append(temp);
+      ent:temperatures := ent:temperatures.append({"temperature": temp, "timestamp": event:attrs{"timestamp"}});
     }
   }
 }
