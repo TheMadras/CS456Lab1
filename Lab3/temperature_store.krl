@@ -1,9 +1,6 @@
 ruleset wovyn_base {
   meta {
-    use module org.twilio.sdk alias sdk
-      with
-        accountSid = ctx:rid_config{"account_sid"}
-        authToken = ctx:rid_config{"auth_token"}
+    provides temperatures, threshold_violations, inrange_temperatures
   }
 
   global {
@@ -19,7 +16,7 @@ ruleset wovyn_base {
     }
 
     inrange_temperatures = function() {
-      ent:temperature_record.filter(function(x) {x == 1;}); 
+      ent:temperature_record.filter(function(x) {ent:violating_temperatures.none(function(y) {y == x});}); 
     }
   }
 
