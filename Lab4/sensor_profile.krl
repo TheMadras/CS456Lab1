@@ -25,8 +25,8 @@ ruleset sensor_profile {
   rule collect_temperatures {
     select when sensor profile_updated
     pre {
-      thresh = (event:attrs{"threshold"}).klog("Recording New Threshold: ");
-      contact_number = (event:attrs{"location"}).klog("Recording New contact_number: ");
+      thresh = (event:attrs{"threshold"} || ent:threshold).klog("Recording New Threshold: ");
+      contact_number = (event:attrs{"contact_number"}).klog("Recording New contact_number: ");
       current_name = (event:attrs{"current_name"}).klog("Recording New current_name: ");
       location = (event:attrs{"location"}).klog("Recording New Location: ");
     }
