@@ -1,21 +1,20 @@
 ruleset wovyn_base {
   meta {
+    use module sensor_profile alias profile
     use module org.twilio.sdk alias sdk
       with
         accountSid = ctx:rid_config{"account_sid"}
         authToken = ctx:rid_config{"auth_token"}
   }
 
-  global {
-    temperature_threshold = 74;
-  }
-
   rule threshold_notification {
     select when wovyn threshold_violation
     pre {
-      message = (<<Recieved high temp of #{event:attrs{"high_temp"}} at time #{event:attrs{"time_recorded"}}.>>).klog("Sent notification: ")
+      message = (<<Recieved high temp of #{event:attrs{"high_temp"}} at time #{event:attrs{"time_recorded"}}.>>).klog("Sent notification: ");
+      from = profile:contact_number()
     }
-    sdk:sendMessage(message) setting(response)
+
+    sdk:sendMessage(message, from) setting(response)
     fired {
       ent:lastResponse := response
       ent:lastTimestamp := time:now()
@@ -26,6 +25,7 @@ ruleset wovyn_base {
     select when wovyn new_temperature_reading
     pre {
       temp = (event:attrs{["temperature", "temperatureF"]}).klog("Sent Temperature: ")
+      temperature_threshold = profile:threshold()
     }
     noop();
     fired {

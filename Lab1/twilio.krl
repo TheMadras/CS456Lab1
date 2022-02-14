@@ -16,11 +16,11 @@ ruleset org.twilio.sdk {
       response{"content"}.decode()
     }
   
-    sendMessage = defaction(message) {
+    sendMessage = defaction(message, number) {
       post_url = <<#{base_url}/Accounts/#{accountSid}/Messages.json>>.klog("Url to post to: ")
       // From and to sections are hardcoded because they are the only legitimate numbers for the Twilio account
       form = {
-        "To": "+14806690991",
+        "To": number,
         "From": "+19378822560",
         "Body": message
       }
