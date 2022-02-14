@@ -26,8 +26,8 @@ ruleset sensor_profile {
     select when sensor profile_updated
     pre {
       thresh = (event:attrs{"threshold"} || ent:threshold || 74).klog("Recording New Threshold: ");
-      contact_number = (event:attrs{"contact_number" || ent:contact_number || "+14806690991"}).klog("Recording New contact_number: ");
-      current_name = (event:attrs{"current_name" || ent:current_name || "default sensor"}).klog("Recording New current_name: ");
+      contact_number = (event:attrs{"contact_number"} || ent:contact_number || "+14806690991").klog("Recording New contact_number: ");
+      current_name = (event:attrs{"current_name"} || ent:current_name || "default sensor").klog("Recording New current_name: ");
       location = (event:attrs{"location"} || ent:location || "home").klog("Recording New Location: ");
     }
     noop();
