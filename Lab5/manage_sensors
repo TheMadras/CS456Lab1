@@ -50,10 +50,11 @@ ruleset manage_sensors {
       name = (event:attrs{"name"} || "not found").klog("Creating sensor with name: ");
       res = (x || "not found").klog("Here is my iteration: ");
     }
+    event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}})
     noop();
     fired {
       ent:sensors := ent:sensors.defaultsTo({}).put(name, eci);
-      ent:res := event:send({"eci": eci, "domain": "test", "type": "test", "attrs": {"url": x}});
+      ent:res := ;
     }
   }
 
