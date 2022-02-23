@@ -28,6 +28,8 @@ ruleset manage_sensors {
     noop();
     fired {
       ent:threshold := thresh;
+      foreach required_rulesets setting (x)
+        next = (x || "nothing").klog("Outputting next ruleset: ");
     }
   }
 
