@@ -65,8 +65,8 @@ ruleset manage_sensors {
       send_directive("sensor_not_exists", {"sensor_name": sensor_name})
     notfired {
       ent:sensors := ent:sensors.defaultsTo({}).delete(sensor_name)
-      raise wrangler event "child_deletion" attributes {
-        "name": sensor_name
+      raise wrangler event "child_deletion_request" attributes {
+        "eci": eci
       }
     }
   }
