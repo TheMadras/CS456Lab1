@@ -1,4 +1,7 @@
 ruleset manage_sensors {
+  meta {
+    shares threshold, sensors, contact_number
+  }
   global {
     sensors = function() {
       ent:sensors.defaultsTo({});
@@ -9,6 +12,12 @@ ruleset manage_sensors {
     contact_number = function() {
       ent:contact_number.defaultsTo("+14806690991");
     }
+    required_rulesets = [
+      "",
+      "",
+      "",
+      ""
+    ];
   }
 
   rule sensor_manager_set_threshold {
@@ -35,18 +44,27 @@ ruleset manage_sensors {
 
   rule sensor_created {
     select when wrangler new_child_created 
+    pre {
+      eci = (event:attrs{"eci"} || "not found").klog("Creating sensor with eci: ");
+      name = (event:attrs{"name"} || "not found").klog("Creating sensor with name: ");
+    }
+    noop();
+    fired {
+      ent:sensors := ent:sensors.defaultsTo({}).put(name, eci);
+    }
+
   }
 
   rule new_sensor {
     select when sensor new_sensor
     pre {
-      sensor_name = event:attr("sensor_name")
+      sensor_name = event:attrs{"sensor_name"}
       exists = ent:sensors && ent:sensors >< sensor_name
     }
     if exists then
       send_directive("sensor_exists", {"sensor_name":sensor_name})
     notfired {
-      ent:sections := ent:sections.defaultsTo({}).put({sensor_name: 0})
+      ent:sensors := ent:sensors.defaultsTo({}).put(sensor_name, 0)
       raise wrangler event "new_child_request"
         attributes { "name": sensor_name, "backgroundColor": "#ff69b4" }
     }
