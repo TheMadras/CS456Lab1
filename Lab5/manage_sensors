@@ -1,5 +1,6 @@
 ruleset manage_sensors {
   meta {
+    use module io.picolabs.wrangler alias wrangler
     shares threshold, sensors, contact_number
   }
   global {
@@ -12,6 +13,13 @@ ruleset manage_sensors {
     contact_number = function() {
       ent:contact_number.defaultsTo("+14806690991");
     }
+
+    temperatures = function() {
+      temps = {};
+      foreach ent:sensors.defaultsTo({}) setting(x)
+        temps = temps.put(x, wrangler:picoQuery(eci,"temperature_store","temperatures",{}));
+    }
+
     required_rulesets = [
       "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
       "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
@@ -40,14 +48,6 @@ ruleset manage_sensors {
     noop();
     fired {
       ent:contact_number := contact_number;
-    }
-  }
-
-  rule sensor_installed {
-    select when sensor installed 
-    pre {
-      eci = (event:attrs{"eci"} || "not found").klog("Installed sensor with eci2: ");
-      name = (event:attrs{"name"} || "not found").klog("Installed sensor with name: ");
     }
   }
 
