@@ -51,7 +51,10 @@ ruleset manage_sensors {
       res = (x || "not found").klog("Here is my iteration: ");
     }
     event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}})
-    raise movie event "rated" attributes event:attrs on final
+    noop();
+    fired {
+      raise movie event "rated" attributes event:attrs on final
+    }
   }
 
   rule unneeded_sensor {
