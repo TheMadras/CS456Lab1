@@ -57,19 +57,17 @@ ruleset manage_sensors {
   rule unneeded_sensor {
     select when sensor unneeded_sensor
     pre {
-      sensor_name = event:attrs{"sensor_name"}
-      exists = ent:sensors && ent:sensors >< sensor_name
+      sensor_name = event:attrs{"sensor_name"};
+      exists = ent:sensors && ent:sensors >< sensor_name;
+      eci = ent:sensors.get([sensor_name]);
     }
     if not exists then
-      send_directive("sensor_not_exists", {"sensor_name":sensor_name})
+      send_directive("sensor_not_exists", {"sensor_name": sensor_name})
     notfired {
-      eci = ent:sensors.get([sensor_name])
-      event:send({"eci": eci, "domain": "wrangler", "type": "child_deletion",
-        "attrs": {
-          "id": meta:picoId.klog("id"),
-          "name": wrangler:name().klog("name")}
-      });
       ent:sensors := ent:sensors.defaultsTo({}).delete(sensor_name)
+      raise wrangler event "child_deletion" attributes {
+        "name": sensor_name
+      }
     }
   }
 
