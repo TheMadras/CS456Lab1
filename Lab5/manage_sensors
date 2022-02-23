@@ -12,13 +12,13 @@ ruleset manage_sensors {
     contact_number = function() {
       ent:contact_number.defaultsTo("+14806690991");
     }
-    required_rulesets = {
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl": 0,
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl": 1,
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl": 2,
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab3/temperature_store.krl": 3,
-      "extra": 5,
-    };
+    required_rulesets = [
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab3/temperature_store.krl",
+      "",
+    ];
   }
 
   rule sensor_manager_set_threshold {
@@ -46,22 +46,25 @@ ruleset manage_sensors {
   rule sensor_installed {
     select when sensor installed 
     pre {
-      eci = (event:attrs{"eci"} || "not found").klog("Installed sensor with eci: ");
+      eci = (event:attrs{"eci"} || "not found").klog("Installed sensor with eci2: ");
       name = (event:attrs{"name"} || "not found").klog("Installed sensor with name: ");
     }
   }
 
   rule sensor_created {
     select when wrangler new_child_created 
-    foreach required_rulesets setting (x)
+    foreach required_rulesets setting (x, i)
     pre {
       eci = (event:attrs{"eci"} || "not found").klog("Creating sensor with eci: ");
       name = (event:attrs{"name"} || "not found").klog("Creating sensor with name: ");
       res = (x || "not found").klog("Here is my iteration: ");
     }
-    raise sensor event "installed" attributes event:attrs on last
-    notfired {
+    
+    if i != 4 then
       event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}})
+    notfired {
+      ent:sensors := ent:sensors.defaultsTo({}).put(name, eci)
+      raise sensor event "installed" attributes event:attrs
     }
   }
 
