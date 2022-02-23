@@ -52,8 +52,8 @@ ruleset manage_sensors {
     noop();
     fired {
       ent:sensors := ent:sensors.defaultsTo({}).put(name, eci);
-      event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}});
-      send_directive("sensor_installation", {"status":"complete"})
+      ent:res := (x || "not found").klog("Here is my iteration: ");
+      send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}});
     }
   }
 
