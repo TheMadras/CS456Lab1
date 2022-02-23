@@ -13,10 +13,10 @@ ruleset manage_sensors {
       ent:contact_number.defaultsTo("+14806690991");
     }
     required_rulesets = [
-      "",
-      "",
-      "",
-      ""
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
+      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab3/temperature_store.krl"
     ];
   }
 
