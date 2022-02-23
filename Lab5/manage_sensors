@@ -1,17 +1,54 @@
 ruleset manage_sensors {
   global {
+    sensors = function() {
+      ent:sensors.defaultsTo({});
+    }
     threshold = function() {
-      ent:threshold.defaultsTo([]);
+      ent:threshold.defaultsTo(74);
+    }
+    contact_number = function() {
+      ent:contact_number.defaultsTo("+14806690991");
+    }
+  }
+
+  rule sensor_manager_set_threshold {
+    select when sensor_manager set_threshold
+    pre {
+      thresh = (event:attrs{"threshold"} || ent:threshold || 74).klog("Recording New Threshold For All Sensors: ");
+    }
+    noop();
+    fired {
+      ent:threshold := thresh;
+    }
+  }
+
+  rule sensor_manager_set_contact {
+    select when sensor_manager set_contact
+    pre {
+      contact_number = (event:attrs{"contact_number"} || ent:contact_number || "+14806690991").klog("Recording New contact_number: ");
+    }
+    noop();
+    fired {
+      ent:contact_number := contact_number;
     }
   }
 
   rule sensor_created {
-    select when wrangler new_child_created
-    
+    select when wrangler new_child_created 
   }
 
   rule new_sensor {
     select when sensor new_sensor
-    
+    pre {
+      sensor_name = event:attr("sensor_name")
+      exists = ent:sensors && ent:sensors >< sensor_name
+    }
+    if exists then
+      send_directive("sensor_exists", {"sensor_name":sensor_name})
+    notfired {
+      ent:sections := ent:sections.defaultsTo({}).put({sensor_name: 0})
+      raise wrangler event "new_child_request"
+        attributes { "name": sensor_name, "backgroundColor": "#ff69b4" }
+    }
   }
 }
