@@ -1,7 +1,9 @@
 ruleset manage_sensors {
   meta {
     use module io.picolabs.wrangler alias wrangler
-    shares threshold, sensors, contact_number
+    shares threshold, sensors, contact_number, temperatures
+    accountSid = ctx:rid_config{"account_sid"}
+    authToken = ctx:rid_config{"auth_token"}
   }
   global {
     sensors = function() {
@@ -15,17 +17,19 @@ ruleset manage_sensors {
     }
 
     temperatures = function() {
-      temps = {};
-      foreach ent:sensors.defaultsTo({}) setting(x)
-        temps = temps.put(x, wrangler:picoQuery(eci,"temperature_store","temperatures",{}));
+      ent:sensors.defaultsTo({}).map(function(v, k) {wrangler:picoQuery(v,"temperature_store","temperatures",{})}) || {};
     }
 
     required_rulesets = [
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
-      "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab3/temperature_store.krl",
-      "",
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
+          "rid": "io.picolabs.wovyn.emitter",
+          "config": {},
+        }
+      },
     ];
   }
 
@@ -59,15 +63,13 @@ ruleset manage_sensors {
       name = (event:attrs{"name"} || "not found").klog("Creating sensor with name: ");
       res = (x || "not found").klog("Here is my iteration: ");
     }
-    
-    if i != 4 then
-      event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}})
-    notfired {
-      ent:sensors := ent:sensors.defaultsTo({}).put(name, eci)
-      event:send({"eci": eci, "domain": "sensor_profile", "type": "profile_updated",
-        "attrs": {"current_name": name, "contact_number": ent:contact_number.defaultsTo("+14806690991"), "threshold": ent:threshold.defaultsTo("74")}
-      })
-    }
+    ent:sensors := ent:sensors.defaultsTo({}).put(name, eci);
+    event:send(
+      { "eci": eci,
+        "domain": x{"domain"}, "type": x{"type"},
+        "attrs": x{"attrs"}
+      }
+    );
   }
 
   rule unneeded_sensor {
