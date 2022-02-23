@@ -1,0 +1,17 @@
+ruleset manage_sensors {
+  global {
+    threshold = function() {
+      ent:threshold.defaultsTo([]);
+    }
+  }
+
+  rule sensor_created {
+    select when wrangler new_child_created
+    
+  }
+
+  rule new_sensor {
+    select when sensor new_sensor
+    
+  }
+}
