@@ -64,7 +64,9 @@ ruleset manage_sensors {
       event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}})
     notfired {
       ent:sensors := ent:sensors.defaultsTo({}).put(name, eci)
-      raise sensor event "installed" attributes event:attrs
+      event:send({"eci": eci, "domain": "sensor_profile", "type": "profile_updated",
+        "attrs": {"current_name": name, "contact_number": ent:contact_number.defaultsTo("+14806690991"), "threshold": ent:threshold.defaultsTo("74")}
+      })
     }
   }
 
