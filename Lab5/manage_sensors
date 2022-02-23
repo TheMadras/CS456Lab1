@@ -51,7 +51,6 @@ ruleset manage_sensors {
       res = (x || "not found").klog("Here is my iteration: ");
     }
     event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}})
-    event:send({"eci": eci, "domain": "sensor_profile", "type": "profile_updated", "attrs": {"current_name": name}}) on final
   }
 
   rule unneeded_sensor {
