@@ -50,11 +50,11 @@ ruleset manage_sensors {
       name = (event:attrs{"name"} || "not found").klog("Creating sensor with name: ");
       res = (x || "not found").klog("Here is my iteration: ");
     }
-    event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}})
-    noop();
-    fired {
+    post {
+      event:send({"eci": eci, "domain": "wrangler", "type": "install_ruleset_request", "attrs": {"url": x}});
       raise movie event "rated" attributes event:attrs on final
     }
+
   }
 
   rule unneeded_sensor {
