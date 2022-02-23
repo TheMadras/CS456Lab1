@@ -54,7 +54,25 @@ ruleset manage_sensors {
       foreach required_rulesets setting (x)
         next = (x || "nothing").klog("Outputting next ruleset: ");
     }
+  }
 
+  rule unneeded_sensor {
+    select when sensor unneeded_sensor
+    pre {
+      sensor_name = event:attrs{"sensor_name"}
+      exists = ent:sensors && ent:sensors >< sensor_name
+    }
+    if not exists then
+      send_directive("sensor_not_exists", {"sensor_name":sensor_name})
+    notfired {
+      eci = ent:sensors.get([sensor_name])
+      event:send({"eci": eci, "domain": "wrangler", "type": "child_deletion",
+        "attrs": {
+          "id": meta:picoId.klog("id"),
+          "name": wrangler:name().klog("name")}
+      });
+      ent:sensors := ent:sensors.defaultsTo({}).delete(sensor_name)
+    }
   }
 
   rule new_sensor {
