@@ -5,19 +5,16 @@ ruleset temperature_store {
   }
 
   global {
-    temperature_record = [];
-    violating_temperatures = [];
-
     temperatures = function() {
-      ent:temperature_record;
+      ent:temperature_record.defaultsTo([]);
     }
 
     threshold_violations = function() {
-      ent:violating_temperatures;
+      ent:violating_temperatures.defaultsTo([]);
     }
 
     inrange_temperatures = function() {
-      ent:temperature_record.filter(function(x) {ent:violating_temperatures.none(function(y) {y == x});}); 
+      ent:temperature_record.defaultsTo([]).filter(function(x) {ent:violating_temperatures.none(function(y) {y == x});}); 
     }
   }
 
@@ -37,7 +34,7 @@ ruleset temperature_store {
     }
     noop();
     fired {
-      ent:violating_temperatures := ent:violating_temperatures.append({"temperature": temp, "timestamp": event:attrs{"time_recorded"}});
+      ent:violating_temperatures := ent:violating_temperatures.defaultsTo([]).append({"temperature": temp, "timestamp": event:attrs{"time_recorded"}});
     }
   }
 
@@ -48,7 +45,7 @@ ruleset temperature_store {
     }
     noop();
     fired {
-      ent:temperature_record := ent:temperature_record.append({"temperature": temp, "timestamp": event:attrs{"timestamp"}});
+      ent:temperature_record := ent:temperature_record.defaultsTo([]).append({"temperature": temp, "timestamp": event:attrs{"timestamp"}});
     }
   }
 }
