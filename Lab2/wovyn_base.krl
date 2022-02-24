@@ -1,10 +1,10 @@
 ruleset wovyn_base {
   meta {
     use module sensor_profile alias profile
-    use module org.twilio.sdk alias sdk
-      with
-        accountSid = ctx:rid_config{"account_sid"}
-        authToken = ctx:rid_config{"auth_token"}
+    // use module org.twilio.sdk alias sdk
+    //   with
+    //     accountSid = ctx:rid_config{"account_sid"}
+    //     authToken = ctx:rid_config{"auth_token"}
   }
 
   rule threshold_notification {
@@ -14,9 +14,9 @@ ruleset wovyn_base {
       from = profile:contact_number()
     }
 
-    sdk:sendMessage(message, from) setting(response)
+    // sdk:sendMessage(message, from) setting(response)
     fired {
-      ent:lastResponse := response
+      ent:lastResponse := "response"
       ent:lastTimestamp := time:now()
     }
   }
