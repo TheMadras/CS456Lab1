@@ -35,7 +35,7 @@ ruleset manage_sensors {
         "domain": "wrangler",
         "type": "install_ruleset_request",
         "attrs": {
-          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab1/twilio.krl",
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab1/org.twilio.sdk.krl",
           "rid": "org.twilio.sdk",
           "config": {},
         }
