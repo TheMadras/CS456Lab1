@@ -22,7 +22,15 @@ ruleset manage_sensors {
     }
 
     required_rulesets = [
-
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
+          "rid": "io.picolabs.wovyn.emitter",
+          "config": {},
+        }
+      },
       {
         "domain": "wrangler",
         "type": "install_ruleset_request",
@@ -32,6 +40,33 @@ ruleset manage_sensors {
           "config": {},
         }
       },
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
+          "rid": "wovyn_base",
+          "config": {},
+        }
+      },
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
+          "rid": "sensor_profile",
+          "config": {},
+        }
+      },
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab3/temperature_store.krl",
+          "rid": "temperature_store",
+          "config": {},
+        }
+      }
     ];
   }
 
