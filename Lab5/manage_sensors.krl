@@ -37,6 +37,7 @@ ruleset manage_sensors {
         "attrs": {
           "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab1/twilio.krl",
           "rid": "org.twilio.sdk",
+          "config": {},
         }
       },
       {
@@ -45,7 +46,7 @@ ruleset manage_sensors {
         "attrs": {
           "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
           "rid": "wovyn_base",
-          "config": {"account_sid": accountSid, "auth_token": authToken},
+          "config": {},
         }
       },
       {
