@@ -44,8 +44,8 @@ ruleset manage_sensors {
         "domain": "wrangler",
         "type": "install_ruleset_request",
         "attrs": {
-          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
-          "rid": "wovyn_base",
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
+          "rid": "sensor_profile",
           "config": {},
         }
       },
@@ -53,8 +53,8 @@ ruleset manage_sensors {
         "domain": "wrangler",
         "type": "install_ruleset_request",
         "attrs": {
-          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
-          "rid": "sensor_profile",
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
+          "rid": "wovyn_base",
           "config": {},
         }
       },
