@@ -74,9 +74,6 @@ ruleset manage_sensors {
           "contact_number": ent:contact_number.defaultsTo("+14806690991"),
           "current_name": "hey",
         }
-      },
-      {
-        "domain" : "none"
       }
     ];
   }
@@ -108,6 +105,10 @@ ruleset manage_sensors {
     pre {
       eci = (event:attrs{"eci"} || "not found").klog("Adding sensor with eci: ");
       name = (event:attrs{"name"} || "not found").klog("Adding sensor with name: ");
+    }
+    noop();
+    fired {
+      ent:sensors := ent:sensors.put(name, eci);
     }
   }
 
