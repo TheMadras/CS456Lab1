@@ -119,6 +119,7 @@ ruleset manage_sensors {
       eci = (event:attrs{"eci"} || "not found").klog("Creating sensor with eci: ");
       name = (event:attrs{"name"} || "not found").klog("Creating sensor with name: ");
       res = (i).klog("Here is my iteration: ");
+      attrs = i{"attrs"}.put(["config"], {"account_sid": accountSid, "auth_token": authToken});
     }
     event:send(
       { "eci": eci,
