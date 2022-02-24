@@ -22,15 +22,7 @@ ruleset manage_sensors {
     }
 
     required_rulesets = [
-      {
-        "domain": "wrangler",
-        "type": "install_ruleset_request",
-        "attrs": {
-          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
-          "rid": "io.picolabs.wovyn.emitter",
-          "config": {},
-        }
-      },
+
       {
         "domain": "wrangler",
         "type": "install_ruleset_request",
@@ -40,42 +32,6 @@ ruleset manage_sensors {
           "config": {},
         }
       },
-      {
-        "domain": "wrangler",
-        "type": "install_ruleset_request",
-        "attrs": {
-          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
-          "rid": "wovyn_base",
-          "config": {},
-        }
-      },
-      {
-        "domain": "wrangler",
-        "type": "install_ruleset_request",
-        "attrs": {
-          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
-          "rid": "sensor_profile",
-          "config": {},
-        }
-      },
-      {
-        "domain": "wrangler",
-        "type": "install_ruleset_request",
-        "attrs": {
-          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab3/temperature_store.krl",
-          "rid": "temperature_store",
-          "config": {},
-        }
-      },
-      {
-        "domain": "sensor_profile",
-        "type": "profile_updated",
-        "attrs": {
-          "threshold": ent:threshold.defaultsTo(74),
-          "contact_number": ent:contact_number.defaultsTo("+14806690991"),
-          "current_name": "hey",
-        }
-      }
     ];
   }
 
@@ -107,7 +63,16 @@ ruleset manage_sensors {
       eci = (event:attrs{"eci"} || "not found").klog("Adding sensor with eci: ");
       name = (event:attrs{"name"} || "not found").klog("Adding sensor with name: ");
     }
-    noop();
+    event:send(
+      { "eci": eci,
+        "domain": "sensor", "type": "profile_updated",
+        "attrs": {
+          "threshold": ent:threshold.defaultsTo(74),
+          "contact_number": ent:contact_number.defaultsTo("+14806690991"),
+          "current_name": name,
+        }
+      }
+    );
     fired {
       ent:sensors := ent:sensors.put(name, eci);
     }
