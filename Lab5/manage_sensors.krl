@@ -72,9 +72,12 @@ ruleset manage_sensors {
         "attrs": {
           "threshold": ent:threshold.defaultsTo(74),
           "contact_number": ent:contact_number.defaultsTo("+14806690991"),
-          "current_name": env:current_name.defaultsTo("default"),
+          "current_name": "hey",
         }
       },
+      {
+        "domain" : "none"
+      }
     ];
   }
 
@@ -100,6 +103,14 @@ ruleset manage_sensors {
     }
   }
 
+  rule sensor_complete {
+    select when sensor install_complete
+    pre {
+      eci = (event:attrs{"eci"} || "not found").klog("Adding sensor with eci: ");
+      name = (event:attrs{"name"} || "not found").klog("Adding sensor with name: ");
+    }
+  }
+
   rule sensor_created {
     select when wrangler new_child_created 
     foreach required_rulesets setting (i)
@@ -114,6 +125,9 @@ ruleset manage_sensors {
         "attrs": i{"attrs"}
       }
     );
+    fired {
+      raise sensor event "install_complete" attributes {"eci": eci, "name": name}
+    }
 
   }
 
