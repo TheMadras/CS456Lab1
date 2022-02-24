@@ -2,8 +2,9 @@ ruleset manage_sensors {
   meta {
     use module io.picolabs.wrangler alias wrangler
     shares threshold, sensors, contact_number, temperatures
-    accountSid = ctx:rid_config{"account_sid"}
-    authToken = ctx:rid_config{"auth_token"}
+    configure using
+      accountSid = ctx:rid_config{"account_sid"}
+      authToken = ctx:rid_config{"auth_token"}
   }
   global {
     sensors = function() {
@@ -28,6 +29,42 @@ ruleset manage_sensors {
           "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/io.picolabs.wovyn.emitter.krl",
           "rid": "io.picolabs.wovyn.emitter",
           "config": {},
+        }
+      },
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab2/wovyn_base.krl",
+          "rid": "wovyn_base",
+          "config": {"account_sid": accountSid, "auth_token": authToken},
+        }
+      },
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab4/sensor_profile.krl",
+          "rid": "sensor_profile",
+          "config": {},
+        }
+      },
+      {
+        "domain": "wrangler",
+        "type": "install_ruleset_request",
+        "attrs": {
+          "absoluteURL": "file:///Users/braydonhunt/School/CS462/pico/Lab1/Lab3/temperature_store.krl",
+          "rid": "temperature_store",
+          "config": {},
+        }
+      },
+      {
+        "domain": "sensor_profile",
+        "type": "profile_updated",
+        "attrs": {
+          "threshold": ent:threshold.defaultsTo(74),
+          "contact_number": ent:contact_number.defaultsTo("+14806690991"),
+          "current_name": env:current_name.defaultsTo("default"),
         }
       },
     ];
@@ -57,19 +94,19 @@ ruleset manage_sensors {
 
   rule sensor_created {
     select when wrangler new_child_created 
-    foreach required_rulesets setting (x, i)
+    foreach required_rulesets setting (i)
     pre {
       eci = (event:attrs{"eci"} || "not found").klog("Creating sensor with eci: ");
       name = (event:attrs{"name"} || "not found").klog("Creating sensor with name: ");
-      res = (x || "not found").klog("Here is my iteration: ");
+      res = (i).klog("Here is my iteration: ");
     }
-    ent:sensors := ent:sensors.defaultsTo({}).put(name, eci);
     event:send(
       { "eci": eci,
-        "domain": x{"domain"}, "type": x{"type"},
-        "attrs": x{"attrs"}
+        "domain": i{"domain"}, "type": i{"type"},
+        "attrs": i{"attrs"}
       }
     );
+
   }
 
   rule unneeded_sensor {
