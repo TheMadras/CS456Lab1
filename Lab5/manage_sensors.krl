@@ -126,7 +126,7 @@ ruleset manage_sensors {
       }
     );
     fired {
-      raise sensor event "install_complete" attributes {"eci": eci, "name": name}
+      raise sensor event "install_complete" attributes {"eci": eci, "name": name} on final;
     }
 
   }
